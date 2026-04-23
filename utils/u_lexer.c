@@ -1,6 +1,3 @@
-#ifndef __u_lex__
-#define __u_lex__
-
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdlib.h>
@@ -57,4 +54,3 @@ Lexer* lexer_init(const char* filename, char* buffer, long len){
     return l;
 }
 
-#endif

@@ -1,19 +1,27 @@
 #ifndef __lexer_h__
 #define __lexer_h__
-#include <stdint.h>
-#include <stdlib.h>
+
 #include <inttypes.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 typedef enum {
     TKN_INT,
     TKN_CHAR,
     TKN_MAIN,
+    TKN_VOID,
+    TKN_FLOAT,
+    TKN_DOUBLE,
 
     TKN_L_CBRACK, // {
     TKN_R_CBRACK, // {
     TKN_L_PRAN,   // (
     TKN_R_PRAN,   // (
+    TKN_COL,      // ,
+    TKN_SEMCOL,   // ;
+    
+
+    TKN_RETURN,   // return 
 
     TKN_EOF,      // end of file
 }token_type;
@@ -28,15 +36,29 @@ typedef struct _Token{
 
 typedef struct _Lexer{
     char* buffer;
-    unsigned line; 
-    unsigned column; 
-    unsigned pos; 
-    unsigned len; 
+    uint32_t line; 
+    uint32_t column; 
+    uint32_t pos; 
+    uint32_t len; 
     const char* filename; 
     struct _Token* head;
 }Lexer;
 
 Lexer* src_to_tkn(const char* filename);
-Lexer* tokenizer(Lexer*);
+Lexer* tokenizer(Lexer* l);
+Token* make_token(Lexer* l);
+Token* make_op_token(Lexer* l);
+Token* make_res_token(Lexer* l);
+Token* _token(token_type type, void* value);
+
+
+
+
+char peek(char ch);
+char is_dig(char ch);
+char is_dig_letter(char ch);
+char* read_file(const char* filename, long* len);
+Lexer* lexer_init(const char* filename, char* buffer, long len);
+void skipwhitespaces(Lexer* l);
 
 #endif
