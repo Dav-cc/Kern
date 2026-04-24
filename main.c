@@ -8,6 +8,7 @@ int main(int argc, char **argv) {
     tkn = lex->head;
 
     while(tkn){
+        
         printf("tokne_id = ---%d---, token_vlaue = ---%s---\n",tkn->type, (char*) tkn->value);
         tkn = tkn->next;
     }

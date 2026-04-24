@@ -165,7 +165,7 @@ Token* make_res_token(Lexer* l){
         else if((strcmp(word, "return") == 0 )){
             return _token(TKN_RETURN, "#Return_token");
         }
-        else if(is_dig_letter(*word)){
+        else if((is_dig_letter(*word))){
             return _token(TKN_UNKNOWN, (void*)word);
         }
     }
@@ -174,20 +174,21 @@ Token* make_res_token(Lexer* l){
 
 Token* make_op_token(Lexer* l){
     char c;
-    if((c = is_dig(*l->buffer)) && l->pos < l->len){
-        long* value = (long*) malloc(sizeof(long));
-        *value = c - '0';
+    if((c = is_dig(*l->buffer)) && (l->pos < l->len)){
+        long value = c - 48;
         l->buffer++;
         l->column++;
         l->pos++;
         while((c = is_dig(*l->buffer)) && (l->pos < l->len)){
-            *value *= 10;
-            *value = c - '0';
+            value *= 10;
+            value += c - 48;
             l->buffer++;
             l->pos++;
             l->column++;
         }
-        return _token(TKN_INT_VALUE, (void*)value);
+        int* fval = (int*)malloc(sizeof(int));
+        *fval =value; 
+        return _token(TKN_INT_VALUE, (void*)fval);
     }
 
     // TODO : string litterals
@@ -228,6 +229,18 @@ Token* make_op_token(Lexer* l){
             l->column++;
             l->pos++;
             return _token(TKN_EQ, "#EQ");
+        }
+         if(c == '+'){
+            l->buffer++;
+            l->column++;
+            l->pos++;
+            return _token(TKN_PLUS, "#PULS");
+        }
+         if(c == '-'){
+            l->buffer++;
+            l->column++;
+            l->pos++;
+            return _token(TKN_MINUS, "#MINUS");
         }
         return NULL;
     }

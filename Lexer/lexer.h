@@ -15,6 +15,8 @@ typedef enum {
     TKN_DOUBLE,
 
     TKN_EQ,       // =
+    TKN_PLUS,     // +
+    TKN_MINUS,    // -
 
     TKN_L_CBRACK, // {
     TKN_R_CBRACK, // {
