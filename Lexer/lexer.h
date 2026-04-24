@@ -7,11 +7,14 @@
 
 typedef enum {
     TKN_INT,
+    TKN_INT_VALUE,
     TKN_CHAR,
     TKN_MAIN,
     TKN_VOID,
     TKN_FLOAT,
     TKN_DOUBLE,
+
+    TKN_EQ,       // =
 
     TKN_L_CBRACK, // {
     TKN_R_CBRACK, // {
@@ -22,6 +25,8 @@ typedef enum {
     
 
     TKN_RETURN,   // return 
+
+    TKN_UNKNOWN,
 
     TKN_EOF,      // end of file
 }token_type;
