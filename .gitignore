@@ -6,3 +6,6 @@ t
 test.c
 .vscode/
 *.h.gch
+utils/
+lexer
+test/
