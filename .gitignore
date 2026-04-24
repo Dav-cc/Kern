@@ -4,4 +4,5 @@ ruls.md
 a.out
 t
 test.c
-
+.vscode/
+*.h.gch

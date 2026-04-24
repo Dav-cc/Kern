@@ -1,9 +1,16 @@
 #include "Lexer/lexer.h"
+#include <stdio.h>
 
 int main(int argc, char **argv) {
     Lexer* lex = src_to_tkn("test.c");
-    while(lex->head){
-        printf("--%s--\n", (char*)lex->head);
-        lex->head = lex->head->next;
+
+    Token* tkn = malloc(sizeof(Token));
+    tkn = lex->head;
+
+    while(tkn){
+        printf("--%s--\n",(char*) tkn->value);
+        tkn = tkn->next;
     }
+    
+
 }

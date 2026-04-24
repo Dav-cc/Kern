@@ -55,7 +55,7 @@ Lexer* lexer_init(const char* filename, char* buffer, long len){
 }
 
 void skipwhitespaces(Lexer* l){
-    while((l->pos < l->len) && (*l->buffer ==' ') && (*l->buffer == '\n')){
+    while((l->pos < l->len) && ((*l->buffer == ' ') || (*l->buffer == '\n'))){
         if(*l->buffer == ' '){
             l->buffer++;
             l->pos++;
@@ -97,16 +97,14 @@ Lexer* src_to_tkn(const char* filename){
 Lexer* tokenizer(Lexer* l){
     Token* a;
     Token* b;
-    Token* head = {0};
+
     a = make_token(l);
-    while(a != NULL){
-        printf("im here\n");
+    l->head = a;
+    while(a->type != TKN_EOF){
         b = make_token(l);
-        b = a->next;
+        a->next = b;
         a = b;
     }
-    head = a;
-    l->head = head;
 
     return l;
 }
@@ -119,8 +117,7 @@ Token* make_token(Lexer* l){
         tkn = make_op_token(l);
     }
     if(!tkn){
-        printf("error in lexing token\n");
-        return NULL;
+        tkn = _token(TKN_EOF, "#EOF\n");
     }
     return tkn;
 }
@@ -131,32 +128,41 @@ Token* make_res_token(Lexer* l){
         char* wptr;
         char* word = malloc(101);
         wptr = word;
-        *word = c;
-        word++;
+        *wptr = c;
+        wptr++;
+        l->buffer++;
+        l->pos++;
+        l->column++;
 
         while((l->pos < l->len)&& (c = is_dig_letter(*l->buffer))){
-            *word = c;
-            word++;
+            *wptr = c;
+            wptr++;
             l->buffer++;
+            l->pos++;
+            l->column++;
         }
-        *word = '\0';
-        
-        if((strcmp(wptr, "int") == 0)){
+
+        *wptr = '\0';
+
+        if((strcmp(word, "int") == 0)){
             return _token(TKN_INT, "#Int_token");
         }
-        else if((strcmp(wptr, "main") == 0 )){
+        else if((strcmp(word, "main") == 0 )){
             return _token(TKN_MAIN, "#Main_token");
         }
-        else if((strcmp(wptr, "char") == 0 )){
+        else if((strcmp(word, "void") == 0 )){
+            return _token(TKN_VOID, "#Void_token");
+        }
+        else if((strcmp(word, "char") == 0 )){
             return _token(TKN_CHAR, "#Char_token");
         }
-        else if((strcmp(wptr, "float") == 0 )){
+        else if((strcmp(word, "float") == 0 )){
             return _token(TKN_FLOAT, "#Float_token");
         }
-        else if((strcmp(wptr, "double") == 0 )){
+        else if((strcmp(word, "double") == 0 )){
             return _token(TKN_DOUBLE, "#Double_token");
         }
-        else if((strcmp(wptr, "return") == 0 )){
+        else if((strcmp(word, "return") == 0 )){
             return _token(TKN_RETURN, "#Return_token");
         }
     }
@@ -179,20 +185,35 @@ Token* make_op_token(Lexer* l){
             l->column++;
         }
     }
-    if((c = peek(c)) && (l->pos < l->len)){
+    if((c = *l->buffer) && (l->pos < l->len)){
         if(c == '{'){
+            l->buffer++;
+            l->column++;
+            l->pos++;
             return _token(TKN_L_CBRACK, "#C_L_brack");
         }
         if(c == '}'){
+            l->buffer++;
+            l->column++;
+            l->pos++;
             return _token(TKN_R_CBRACK, "#C_R_brack");
         }
         if(c == '('){
+            l->buffer++;
+            l->column++;
+            l->pos++;
             return _token(TKN_L_PRAN, "#L_pran");
         }
         if(c == ')'){
+            l->buffer++;
+            l->column++;
+            l->pos++;
             return _token(TKN_R_PRAN, "#R_pran");
         }
         if(c == ';'){
+            l->buffer++;
+            l->column++;
+            l->pos++;
             return _token(TKN_SEMCOL, "#Semi_cl");
         }
         return NULL;
