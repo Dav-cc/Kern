@@ -1,0 +1,15 @@
+BasedOnStyle: LLVM
+Language: Cpp
+
+IndentWidth: 4
+ColumnLimit: 100
+UseTab: Never
+MaxEmptyLinesToKeep: 1
+
+BreakBeforeBraces: Attach
+PointerAlignment: Left
+
+IndentCaseLabels: true
+IndentGotoLabels: false
+IndentPPDirectives: AfterHash
+
