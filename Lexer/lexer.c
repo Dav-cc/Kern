@@ -2,28 +2,21 @@
 #include <assert.h>
 #include <string.h>
 
+char peek(char ch) { return ch; }
 
-char peek(char ch){
-    return ch;
+char is_dig(char ch) { return ((ch <= '9' && ch >= '0') ? ch : 0); }
+
+char is_letter(char ch) {
+    return (((ch <= 'Z' && ch >= 'A') || (ch <= 'z' && ch >= 'a') || ch == '_') ? ch : 0);
 }
 
-char is_dig(char ch){ 
-    return ((ch <= '9' && ch >= '0') ? ch : 0); 
-}
+char is_dig_letter(char ch) { return (is_dig(ch) || is_letter(ch)) ? ch : 0; }
 
-char is_letter(char ch){ 
-    return (((ch <= 'Z' && ch >= 'A')|| (ch <= 'z' && ch >= 'a') || ch == '_' )? ch : 0); 
-}
-
-char is_dig_letter(char ch){
-    return (is_dig(ch) || is_letter(ch)) ? ch : 0;
-}
-
-char* read_file(const char* filename, long* len){
+char* read_file(const char* filename, long* len) {
     char* buffer;
 
     FILE* ff = fopen(filename, "r");
-    if(ff == NULL){
+    if (ff == NULL) {
         fprintf(stderr, "error in openning file\n");
         exit(-1);
     }
@@ -32,7 +25,7 @@ char* read_file(const char* filename, long* len){
     *len = length;
 
     buffer = (char*)malloc(length + 1);
-    if(buffer == NULL){
+    if (buffer == NULL) {
         fprintf(stderr, "error in openning file\n");
         exit(-1);
     }
@@ -41,8 +34,7 @@ char* read_file(const char* filename, long* len){
     return buffer;
 }
 
-
-Lexer* lexer_init(const char* filename, char* buffer, long len){
+Lexer* lexer_init(const char* filename, char* buffer, long len) {
     Lexer* l = (Lexer*)malloc(sizeof(Lexer));
     l->column = 1;
     l->pos = 0;
@@ -54,14 +46,14 @@ Lexer* lexer_init(const char* filename, char* buffer, long len){
     return l;
 }
 
-void skipwhitespaces(Lexer* l){
-    while((l->pos < l->len) && ((*l->buffer == ' ') || (*l->buffer == '\n'))){
-        if(*l->buffer == ' '){
+void skipwhitespaces(Lexer* l) {
+    while ((l->pos < l->len) && ((*l->buffer == ' ') || (*l->buffer == '\n'))) {
+        if (*l->buffer == ' ') {
             l->buffer++;
             l->pos++;
             l->column++;
         }
-        if(*l->buffer == '\n'){
+        if (*l->buffer == '\n') {
             l->buffer++;
             l->column = 1;
             l->line++;
@@ -70,8 +62,7 @@ void skipwhitespaces(Lexer* l){
     }
 }
 
-
-Token* _token(token_type type, void* value){
+Token* _token(token_type type, void* value) {
     Token* tkn = (Token*)malloc(sizeof(Token));
     tkn->type = type;
     tkn->value = value;
@@ -79,11 +70,11 @@ Token* _token(token_type type, void* value){
     return tkn;
 }
 
-Lexer* src_to_tkn(const char* filename){
+Lexer* src_to_tkn(const char* filename) {
     long size;
     Lexer* lex = {0};
 
-    char *buffer = read_file(filename, &size);
+    char* buffer = read_file(filename, &size);
     assert(buffer != NULL);
 
     lex = lexer_init(filename, buffer, size);
@@ -94,13 +85,13 @@ Lexer* src_to_tkn(const char* filename){
     return lex;
 }
 
-Lexer* tokenizer(Lexer* l){
+Lexer* tokenizer(Lexer* l) {
     Token* a;
     Token* b;
 
     a = make_token(l);
     l->head = a;
-    while(a->type != TKN_EOF){
+    while (a->type != TKN_EOF) {
         b = make_token(l);
         a->next = b;
         a = b;
@@ -109,22 +100,22 @@ Lexer* tokenizer(Lexer* l){
     return l;
 }
 
-Token* make_token(Lexer* l){
+Token* make_token(Lexer* l) {
     skipwhitespaces(l);
 
     Token* tkn = make_res_token(l);
-    if(tkn == NULL){
+    if (tkn == NULL) {
         tkn = make_op_token(l);
     }
-    if(!tkn){
+    if (!tkn) {
         tkn = _token(TKN_EOF, "#EOF\n");
     }
     return tkn;
 }
 
-Token* make_res_token(Lexer* l){
+Token* make_res_token(Lexer* l) {
     char c;
-    if((c = is_letter(*l->buffer))){
+    if ((c = is_letter(*l->buffer))) {
         char* wptr;
         char* word = malloc(101);
         wptr = word;
@@ -134,7 +125,7 @@ Token* make_res_token(Lexer* l){
         l->pos++;
         l->column++;
 
-        while((l->pos < l->len)&& (c = is_dig_letter(*l->buffer))){
+        while ((l->pos < l->len) && (c = is_dig_letter(*l->buffer))) {
             *wptr = c;
             wptr++;
             l->buffer++;
@@ -144,42 +135,35 @@ Token* make_res_token(Lexer* l){
 
         *wptr = '\0';
 
-        if((strcmp(word, "int") == 0)){
+        if ((strcmp(word, "int") == 0)) {
             return _token(TKN_INT, "#Int_token");
-        }
-        else if((strcmp(word, "main") == 0 )){
+        } else if ((strcmp(word, "main") == 0)) {
             return _token(TKN_MAIN, "#Main_token");
-        }
-        else if((strcmp(word, "void") == 0 )){
+        } else if ((strcmp(word, "void") == 0)) {
             return _token(TKN_VOID, "#Void_token");
-        }
-        else if((strcmp(word, "char") == 0 )){
+        } else if ((strcmp(word, "char") == 0)) {
             return _token(TKN_CHAR, "#Char_token");
-        }
-        else if((strcmp(word, "float") == 0 )){
+        } else if ((strcmp(word, "float") == 0)) {
             return _token(TKN_FLOAT, "#Float_token");
-        }
-        else if((strcmp(word, "double") == 0 )){
+        } else if ((strcmp(word, "double") == 0)) {
             return _token(TKN_DOUBLE, "#Double_token");
-        }
-        else if((strcmp(word, "return") == 0 )){
+        } else if ((strcmp(word, "return") == 0)) {
             return _token(TKN_RETURN, "#Return_token");
-        }
-        else if((is_dig_letter(*word))){
+        } else if ((is_dig_letter(*word))) {
             return _token(TKN_UNKNOWN, (void*)word);
         }
     }
     return NULL;
 }
 
-Token* make_op_token(Lexer* l){
+Token* make_op_token(Lexer* l) {
     char c;
-    if((c = is_dig(*l->buffer)) && (l->pos < l->len)){
+    if ((c = is_dig(*l->buffer)) && (l->pos < l->len)) {
         long value = c - 48;
         l->buffer++;
         l->column++;
         l->pos++;
-        while((c = is_dig(*l->buffer)) && (l->pos < l->len)){
+        while ((c = is_dig(*l->buffer)) && (l->pos < l->len)) {
             value *= 10;
             value += c - 48;
             l->buffer++;
@@ -187,56 +171,56 @@ Token* make_op_token(Lexer* l){
             l->column++;
         }
         int* fval = (int*)malloc(sizeof(int));
-        *fval =value; 
+        *fval = value;
         return _token(TKN_INT_VALUE, (void*)fval);
     }
 
     // TODO : string litterals
 
-    if((c = *l->buffer) && (l->pos < l->len)){
-        if(c == '{'){
+    if ((c = *l->buffer) && (l->pos < l->len)) {
+        if (c == '{') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_L_CBRACK, "#C_L_brack");
         }
-        if(c == '}'){
+        if (c == '}') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_R_CBRACK, "#C_R_brack");
         }
-        if(c == '('){
+        if (c == '(') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_L_PRAN, "#L_pran");
         }
-        if(c == ')'){
+        if (c == ')') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_R_PRAN, "#R_pran");
         }
-        if(c == ';'){
+        if (c == ';') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_SEMCOL, "#Semi_cl");
         }
-        if(c == '='){
+        if (c == '=') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_EQ, "#EQ");
         }
-         if(c == '+'){
+        if (c == '+') {
             l->buffer++;
             l->column++;
             l->pos++;
             return _token(TKN_PLUS, "#PULS");
         }
-         if(c == '-'){
+        if (c == '-') {
             l->buffer++;
             l->column++;
             l->pos++;
@@ -245,5 +229,4 @@ Token* make_op_token(Lexer* l){
         return NULL;
     }
     return NULL;
-
 }
