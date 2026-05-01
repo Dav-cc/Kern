@@ -2,8 +2,6 @@
 #include <assert.h>
 #include <string.h>
 
-char peek(char ch) { return ch; }
-
 char is_dig(char ch) { return ((ch <= '9' && ch >= '0') ? ch : 0); }
 
 char is_letter(char ch) {
@@ -31,6 +29,7 @@ char* read_file(const char* filename, long* len) {
     }
     fseek(ff, 0, SEEK_SET);
     int read = fread(buffer, sizeof(char), length + 1, ff);
+    fclose(ff);
     return buffer;
 }
 
@@ -150,7 +149,7 @@ Token* make_res_token(Lexer* l) {
         } else if ((strcmp(word, "return") == 0)) {
             return _token(TKN_RETURN, "#Return_token");
         } else if ((is_dig_letter(*word))) {
-            return _token(TKN_UNKNOWN, (void*)word);
+            return _token(TKN_IDENTIFIER, (void*)word);
         }
     }
     return NULL;
