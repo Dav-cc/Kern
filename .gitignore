@@ -3,9 +3,11 @@ ruls.md
 *.txt
 a.out
 t
+kern
 test.c
 .vscode/
 *.h.gch
 utils/
 lexer
 test/
+build/
