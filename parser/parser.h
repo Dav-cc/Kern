@@ -3,32 +3,32 @@
 
 #include "../Lexer/lexer.h"
 #include "../vector.h"
-#include <stdlib.h>
-
-typedef enum {
-    NODE_FUNC,
-    NODE_PROGRAM,
-    NODE_BLOCK,
-    NODE_VAR,
-    NODE_EXPRESSION,
-    NODE_EOF,
-} parser_type;
+#include <string.h>
 
 typedef struct ASTNode_ {
-    parser_type type;
     void* data;
-    unsigned int row;
-    unsigned int column;
+    token_type type;
 } ASTNode;
 
-
-typedef struct function_node_ {
+typedef struct func_dcl_ {
     char* fname;
-    int params_len;
-    struct function_node_** params;
-    ASTNode* returna_type;
-    vector* statement;
+    ASTNode* return_type;
+    ASTNode** params;
+    int param_cont;
+    int statement_cont;
+    vector* statements;
+} func_dcl;
 
-} function_node;
+
+ASTNode* parse_program(Token* token);
+ASTNode* parse_function(Token* token);
+ASTNode* parse_var(Token* token);
+ASTNode* parse_block(Token* token);
+
+
+
+
+
 
 #endif // __KERN_PARSER_H_
+
