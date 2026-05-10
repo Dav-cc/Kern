@@ -2,29 +2,30 @@
 #define __KERN_PARSER_H_
 
 #include "../Lexer/lexer.h"
-#include "../vector.h"
-#include <string.h>
 
-#define NUDE_FUNCTION 999
+typedef enum {
+    NUDE_INT_LITERAL,
+    NUDE_FLOAT_LITERAL,
+    NUDE_FUNC_DECL,
+    NUDE_VAR_DECL,
+    NUDE_IDENT,
+    NUDE_ASSIGN,
+    NUDE_BINARY_OP,
+    NUDE_RETURN,
+} node_type;
 
-
-typedef struct ASTNode_ {
+typedef struct ASTnode_ {
+    node_type type;
     void* data;
-    token_type type;
-} ASTNode;
+    // TYPE for type checker
+} ASTnode;
 
-typedef struct func_dcl_ {
-    char* fname;
-    ASTNode* return_type;
-    ASTNode** params;
-    int param_cont;
-    int statement_cont;
-    vector* statements;
-} func_dcl;
+typedef struct Parser_{
+    Token* cur;
+    Token* prev;
+    // bool error
+}Parser;
 
-ASTNode* parse_program(Token* token);
-ASTNode* parse_function(Token* token);
-ASTNode* parse_var(Token* token);
-ASTNode* parse_block(Token* token);
+ASTnode* parse_program(Parser* p);
 
 #endif // __KERN_PARSER_H_
