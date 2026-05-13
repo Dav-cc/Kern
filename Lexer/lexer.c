@@ -107,6 +107,7 @@ Token* make_token(Lexer* l) {
         tkn = make_op_token(l);
     }
     if (!tkn) {
+        l->token_count++;
         tkn = _token(TKN_EOF, "#EOF\n");
     }
     return tkn;
@@ -135,18 +136,25 @@ Token* make_res_token(Lexer* l) {
         *wptr = '\0';
 
         if ((strcmp(word, "int") == 0)) {
+            l->token_count++;
             return _token(TKN_INT, "#Int_token");
         } else if ((strcmp(word, "void") == 0)) {
+            l->token_count++;
             return _token(TKN_VOID, "#Void_token");
         } else if ((strcmp(word, "char") == 0)) {
+            l->token_count++;
             return _token(TKN_CHAR, "#Char_token");
         } else if ((strcmp(word, "float") == 0)) {
+            l->token_count++;
             return _token(TKN_FLOAT, "#Float_token");
         } else if ((strcmp(word, "double") == 0)) {
+            l->token_count++;
             return _token(TKN_DOUBLE, "#Double_token");
         } else if ((strcmp(word, "return") == 0)) {
+            l->token_count++;
             return _token(TKN_RETURN, "#Return_token");
         } else if ((is_dig_letter(*word))) {
+            l->token_count++;
             return _token(TKN_IDENTIFIER, (void*)word);
         }
     }
@@ -169,6 +177,7 @@ Token* make_op_token(Lexer* l) {
         }
         int* fval = (int*)malloc(sizeof(int));
         *fval = value;
+        l->token_count++;
         return _token(TKN_INT_VALUE, (void*)fval);
     }
 
@@ -179,54 +188,63 @@ Token* make_op_token(Lexer* l) {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_L_CBRACK, "#C_L_brack");
         }
         if (c == '}') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_R_CBRACK, "#C_R_brack");
         }
         if (c == '(') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_L_PRAN, "#L_pran");
         }
         if (c == ')') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_R_PRAN, "#R_pran");
         }
         if (c == ';') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_SEMCOL, "#Semi_cl");
         }
         if (c == '=') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_EQ, "#EQ");
         }
         if (c == '+') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_PLUS, "#PULS");
         }
         if (c == '-') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_MINUS, "#MINUS");
         }
         if (c == ',') {
             l->buffer++;
             l->column++;
             l->pos++;
+            l->token_count++;
             return _token(TKN_VIRGOOL, "#VIRGOOL");
         }
         return NULL;

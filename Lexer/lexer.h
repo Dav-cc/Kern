@@ -44,6 +44,7 @@ typedef struct _Lexer {
     uint32_t column;
     uint32_t pos;
     uint32_t len;
+    uint32_t token_count;
     const char* filename;
     struct _Token* head;
 } Lexer;
