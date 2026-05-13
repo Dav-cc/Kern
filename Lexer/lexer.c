@@ -223,6 +223,12 @@ Token* make_op_token(Lexer* l) {
             l->pos++;
             return _token(TKN_MINUS, "#MINUS");
         }
+        if (c == ',') {
+            l->buffer++;
+            l->column++;
+            l->pos++;
+            return _token(TKN_VIRGOOL, "#VIRGOOL");
+        }
         return NULL;
     }
     return NULL;

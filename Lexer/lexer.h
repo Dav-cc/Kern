@@ -23,10 +23,12 @@ typedef enum {
     TKN_R_PRAN,   // (
     TKN_COL,      // ,
     TKN_SEMCOL,   // ;
+    TKN_VIRGOOL,  // ,
 
     TKN_RETURN, // return
 
     TKN_IDENTIFIER,
+
     TKN_EOF, // end of file
 } token_type;
 
