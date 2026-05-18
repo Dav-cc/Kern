@@ -23,7 +23,7 @@ typedef struct var_dcl_ {
 
 
 typedef struct parsed_type_ {
-    token_type ret_type;
+    token_type type;
     char* id;
 } parsed_type;
 
@@ -33,7 +33,7 @@ typedef struct func_dcl_ {
     // vector* params;
     parsed_type** params;
     // vector* statement;
-    var_dcl** statement;
+    // var_dcl** statement;     // XXX : data type for all statements in function body . . . ?
     int state_count;
     int param_count;
 } func_dcl;
