@@ -5,46 +5,34 @@
 #include "../vector.h"
 
 typedef enum {
-    NODE_FUNC,
-    NODE_VAR_DECLR,
-    NODE_RETURN,
-    NODE_BLOCK,
-} node_type;
+    AST_PROGRAM,
+    AST_FUNC_DEF,
+    AST_VAR_DEF,
+    AST_EXPR,
+    AST_STMT,
+    AST_SUBTRACT,
+    AST_TIME,
+    AST_DIVIDE,
+    AST_ADD,
+    AST_RETURN,
+    AST_IDENTIFIER,
+    AST_INT_VALUE,
+} ast_type;
 
-typedef struct ASTnode_ {
-    node_type type;
-    void* data;
+typedef struct ASTnode {
+    ast_type type;
+    void* value;
 } ASTnode;
 
-typedef struct var_dcl_ {
-    char* var_name;
-    int value;
-} var_dcl;
-
-
-typedef struct parsed_type_ {
-    token_type type;
-    char* id;
-} parsed_type;
-
-typedef struct func_dcl_ {
-    char* func_name;
-    token_type ret_type;
-    // vector* params;
-    parsed_type** params;
-    // vector* statement;
-    // var_dcl** statement;     // XXX : data type for all statements in function body . . . ?
-    int state_count;
-    int param_count;
-} func_dcl;
-
-typedef struct Parser_ {
-    Token* tkn;
-    int len;
+typedef struct Parser {
+    Lexer* lexer;
+    Token* current_token;
 } Parser;
 
-parsed_type* parse_type(Parser* p);
-ASTnode** parse_program(Parser* p);
-ASTnode* parse_function(Parser* p);
-void advance(Parser* p);
+typedef struct FuncDef {
+    char* name;
+    vector* params;
+    ASTnode* body;
+} FuncDef;
+
 #endif // __KERN_PARSER_H_
