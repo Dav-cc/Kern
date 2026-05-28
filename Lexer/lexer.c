@@ -11,7 +11,7 @@ static char is_letter(char ch) {
 static char is_dig_letter(char ch) { return (is_dig(ch) || is_letter(ch)) ? ch : 0; }
 
 static char* read_file(const char* filename, long* len) {
-    char* buffer;
+    char* buffer = NULL;
 
     FILE* ff = fopen(filename, "r");
     if (ff == NULL) {
@@ -22,13 +22,14 @@ static char* read_file(const char* filename, long* len) {
     long length = ftell(ff);
     *len = length;
 
-    buffer = (char*)malloc(length + 1);
+    buffer = (char*)malloc(length + 1); // +1 byte for null termination
     if (buffer == NULL) {
         fprintf(stderr, "error in openning file\n");
         exit(-1);
     }
     fseek(ff, 0, SEEK_SET);
-    int read = fread(buffer, sizeof(char), length + 1, ff);
+    int read = fread(buffer, sizeof(char), length, ff);
+    buffer[read] = '\0';
     fclose(ff);
     return buffer;
 }
@@ -89,6 +90,9 @@ Lexer* tokenizer(Lexer* l) {
     Token* b;
 
     a = make_token(l);
+    if (!a) {
+        return NULL;
+    }
     l->head = a;
     while (a->type != TKN_EOF) {
         b = make_token(l);
@@ -138,6 +142,30 @@ Token* make_res_token(Lexer* l) {
         if ((strcmp(word, "int") == 0)) {
             l->token_count++;
             return _token(TKN_INT, "#Int_token");
+        } else if ((strcmp(word, "while") == 0)) {
+            l->token_count++;
+            return _token(TKN_WHILE, "#While_token");
+        } else if ((strcmp(word, "switch") == 0)) {
+            l->token_count++;
+            return _token(TKN_SWITCH, "#Switch_token");
+        } else if ((strcmp(word, "break") == 0)) {
+            l->token_count++;
+            return _token(TKN_BREAK, "#Break_token");
+        } else if ((strcmp(word, "for") == 0)) {
+            l->token_count++;
+            return _token(TKN_FOR, "#For_token");
+        } else if ((strcmp(word, "continue") == 0)) {
+            l->token_count++;
+            return _token(TKN_CONTINUE, "#Continue_token");
+        } else if ((strcmp(word, "else") == 0)) {
+            l->token_count++;
+            return _token(TKN_ELSE, "#Else_token");
+        } else if ((strcmp(word, "do") == 0)) {
+            l->token_count++;
+            return _token(TKN_DO, "#Do_token");
+        } else if ((strcmp(word, "if") == 0)) {
+            l->token_count++;
+            return _token(TKN_IF, "#If_token");
         } else if ((strcmp(word, "void") == 0)) {
             l->token_count++;
             return _token(TKN_VOID, "#Void_token");
@@ -245,7 +273,7 @@ Token* make_op_token(Lexer* l) {
             l->column++;
             l->pos++;
             l->token_count++;
-            return _token(TKN_VIRGOOL, "#VIRGOOL");
+            return _token(TKN_COMMA, "#COMMA");
         }
         return NULL;
     }

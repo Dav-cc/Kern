@@ -23,8 +23,16 @@ typedef enum {
     TKN_R_PRAN,   // (
     TKN_COL,      // ,
     TKN_SEMCOL,   // ;
-    TKN_VIRGOOL,  // ,
+    TKN_COMMA,  // ,
 
+    TKN_WHILE,
+    TKN_SWITCH,
+    TKN_BREAK,
+    TKN_FOR,
+    TKN_CONTINUE,
+    TKN_ELSE,
+    TKN_DO,
+    TKN_IF,
     TKN_RETURN, // return
 
     TKN_IDENTIFIER,
