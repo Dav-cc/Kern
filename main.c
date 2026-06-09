@@ -1,5 +1,5 @@
 #include "Lexer/lexer.h"
-#include "parser/parser.h"
+#include "Parser/parser.h"
 #include <stdio.h>
 
 int main(int argc, char** argv) {
@@ -10,8 +10,7 @@ int main(int argc, char** argv) {
         printf("---tkn:%s---\n", (char*)tkn->value);
         tkn = tkn->next;
     }
-    Parser* p = malloc(sizeof(Parser));
-
-    p->tkn = token;
-    ASTnode** tree = parse_program(p);
+    Parser* p;
+    p = init_parser(tkn);
+    parse_program(p);
 }
