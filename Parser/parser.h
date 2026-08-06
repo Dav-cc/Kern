@@ -24,6 +24,7 @@ typedef struct Program {
 } Program;
 
 typedef struct Func {
+    token_type return_type;
     char* func_name;
     vector* params;
     int param_count;
@@ -43,7 +44,7 @@ typedef struct Parser{
 
 
 ASTnode* parse_program(Parser* p);
-ASTnode* parse_function(Parser* p, Token* retype);
-ASTnode* parse_var(Parser* p, Token* type);
+ASTnode* parse_function(Parser* p, Token* retype, Token* name);
+ASTnode* parse_var(Parser* p, Token* type, Token* name);
 Parser* init_parser(Token* tkn_stream);
 #endif // __KERN_PARSER_H_

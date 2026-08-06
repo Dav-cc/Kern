@@ -14,8 +14,8 @@ vector* vector_init(int element_size){
 
 void vector_push(vector* vec, void* item){
     if(vec->capacity == vec->element_number){
-        size_t new_cap = vec->capacity;
-        void* new_element = realloc(vec->items, sizeof(void*));
+        size_t new_cap = vec->capacity * 2;
+        void** new_element = realloc(vec->items, new_cap * sizeof(void*));
         if(!new_element){
             fprintf(stderr, "error in allocating space for realloc\n");
             return; 
@@ -28,8 +28,8 @@ void vector_push(vector* vec, void* item){
 
 
 void* vector_get_index(vector* vec, int index){
-    if(index > vec->capacity){
-        printf("try to access elemenet more than capacity");
+    if(index < 0 || index >= (int)vec->element_number){
+        printf("try to access element out of bounds");
         return NULL;
     }
     void* r = vec->items[index];
